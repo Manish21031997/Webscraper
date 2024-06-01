@@ -3,6 +3,14 @@ plugins {
     id 'java'
 }
 
+test {
+    useTestNG() {
+        suites 'src\test\resources\testng.xml'
+    }
+}
+
+
+
 
 
 // Apply the java plugin to add support for Java
@@ -28,6 +36,16 @@ dependencies {
     // https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-java
     implementation 'org.seleniumhq.selenium:selenium-java:4.14.0'
 
+     // https://mvnrepository.com/artifact/org.testng/testng
+     testImplementation group: 'org.testng', name: 'testng', version: '7.10.1'
+
+      // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.17.2'
+
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.0'
+
+
 }
 
 //task startScript(type:Exec) {
@@ -39,3 +57,35 @@ dependencies {
 //test.dependsOn startScript
 
 mainClassName = 'demo.App'
+
+test {
+    useTestNG() {
+        useDefaultListeners = true // generates the test report
+    }
+
+    afterSuite { desc, result ->
+            if (!desc.parent) {
+                println "\nTEST RESULT: ${result.resultType}"
+                println "TEST SUMMARY: RAN ${result.testCount} TESTS, " +
+                        "${result.successfulTestCount} SUCCEEDED, " +
+                        "${result.failedTestCount} FAILED, " +
+                        "${result.skippedTestCount} SKIPPED"
+            }
+    }
+
+    testLogging {
+		events "PASSED", "SKIPPED", "FAILED", "STANDARD_OUT", "STANDARD_ERROR"
+        exceptionFormat = 'full'
+
+        // Optionally do:
+        showStackTraces = true
+	}
+
+    testLogging.showStandardStreams = true
+    test.outputs.upToDateWhen {false}
+
+}
+
+
+
+
